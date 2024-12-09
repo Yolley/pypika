@@ -9,6 +9,8 @@ from pypika import (
     EmptyCriterion,
     Field,
     Table,
+)
+from pypika import (
     functions as fn,
 )
 from pypika.queries import QueryBuilder
@@ -76,8 +78,8 @@ class CriterionTests(unittest.TestCase):
         self.assertEqual('"crit"."foo"=\'2000-01-01T12:30:55\'', str(c2))
 
     def test__criterion_eq_right(self):
-        c1 = 1 == Field("foo")
-        c2 = -1 == Field("foo", table=self.t)
+        c1 = Field("foo") == 1
+        c2 = Field("foo", table=self.t) == -1
 
         self.assertEqual('"foo"=1', str(c1))
         self.assertEqual('"crit"."foo"=-1', str(c2))
@@ -127,8 +129,8 @@ class CriterionTests(unittest.TestCase):
         self.assertEqual('"crit"."foo"<>\'2000-01-01T12:30:55\'', str(c2))
 
     def test__criterion_ne_right(self):
-        c1 = 1 != Field("foo")
-        c2 = -1 != Field("foo", table=self.t)
+        c1 = Field("foo") != 1
+        c2 = Field("foo", table=self.t) != -1
 
         self.assertEqual('"foo"<>1', str(c1))
         self.assertEqual('"crit"."foo"<>-1', str(c2))
@@ -157,8 +159,8 @@ class CriterionTests(unittest.TestCase):
         self.assertEqual('"crit"."foo"<\'2000-01-01T12:30:55\'', str(c2))
 
     def test__criterion_lt_right(self):
-        c1 = 1 > Field("foo")
-        c2 = -1 > Field("foo", table=self.t)
+        c1 = Field("foo") < 1
+        c2 = Field("foo", table=self.t) < -1
 
         self.assertEqual('"foo"<1', str(c1))
         self.assertEqual('"crit"."foo"<-1', str(c2))
@@ -187,8 +189,8 @@ class CriterionTests(unittest.TestCase):
         self.assertEqual('"crit"."foo">\'2000-01-01T12:30:55\'', str(c2))
 
     def test__criterion_gt_right(self):
-        c1 = 1 < Field("foo")
-        c2 = -1 < Field("foo", table=self.t)
+        c1 = Field("foo") > 1
+        c2 = Field("foo", table=self.t) > -1
 
         self.assertEqual('"foo">1', str(c1))
         self.assertEqual('"crit"."foo">-1', str(c2))
@@ -217,8 +219,8 @@ class CriterionTests(unittest.TestCase):
         self.assertEqual('"crit"."foo"<=\'2000-01-01T12:30:55\'', str(c2))
 
     def test__criterion_lte_right(self):
-        c1 = 1 >= Field("foo")
-        c2 = -1 >= Field("foo", table=self.t)
+        c1 = Field("foo") <= 1
+        c2 = Field("foo", table=self.t) <= -1
 
         self.assertEqual('"foo"<=1', str(c1))
         self.assertEqual('"crit"."foo"<=-1', str(c2))
@@ -247,8 +249,8 @@ class CriterionTests(unittest.TestCase):
         self.assertEqual('"crit"."foo">=\'2000-01-01T12:30:55\'', str(c2))
 
     def test__criterion_gte_right(self):
-        c1 = 1 <= Field("foo")
-        c2 = -1 <= Field("foo", table=self.t)
+        c1 = Field("foo") >= 1
+        c2 = Field("foo", table=self.t) >= -1
 
         self.assertEqual('"foo">=1', str(c1))
         self.assertEqual('"crit"."foo">=-1', str(c2))
@@ -445,8 +447,8 @@ class IsInTests(unittest.TestCase):
         self.assertRaises(AttributeError, lambda: str(fn.Coalesce(Field("foo"), 0).isin('SHOULD_FAIL')))
 
     def test__in_unicode(self):
-        c1 = Field("foo").isin([u"a", u"b"])
-        c2 = Field("foo", table=self.t).isin([u"a", u"b"])
+        c1 = Field("foo").isin(["a", "b"])
+        c2 = Field("foo", table=self.t).isin(["a", "b"])
 
         self.assertEqual("\"foo\" IN ('a','b')", str(c1))
         self.assertEqual("\"isin\".\"foo\" IN ('a','b')", str(c2))
@@ -628,7 +630,8 @@ class ExistsCriterionTests(unittest.TestCase):
         q1 = QueryBuilder().from_(t1).where(ExistsCriterion(self.q2)).select(t1.field1)
 
         self.assertEqual(
-            'SELECT "t1"."field1" FROM "def" "t1" WHERE EXISTS (SELECT "t2"."field2" FROM "abc" "t2")', str(q1)
+            'SELECT "t1"."field1" FROM "def" "t1" WHERE EXISTS (SELECT "t2"."field2" FROM "abc" "t2")',
+            str(q1),
         )
 
     def test_not_exists(self):
@@ -636,7 +639,8 @@ class ExistsCriterionTests(unittest.TestCase):
         q1 = QueryBuilder().from_(t1).where(ExistsCriterion(self.q2).negate()).select(t1.field1)
 
         self.assertEqual(
-            'SELECT "t1"."field1" FROM "def" "t1" WHERE NOT EXISTS (SELECT "t2"."field2" FROM "abc" "t2")', str(q1)
+            'SELECT "t1"."field1" FROM "def" "t1" WHERE NOT EXISTS (SELECT "t2"."field2" FROM "abc" "t2")',
+            str(q1),
         )
 
 

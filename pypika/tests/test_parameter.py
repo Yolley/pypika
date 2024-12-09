@@ -34,7 +34,8 @@ class ParametrizedTests(unittest.TestCase):
         )
 
         self.assertEqual(
-            'SELECT * FROM "abc" JOIN "efg" ON "abc"."id"="efg"."abc_id" WHERE "abc"."category"=%s AND "efg"."date">=%s LIMIT 10',
+            'SELECT * FROM "abc" JOIN "efg" ON "abc"."id"="efg"."abc_id" '
+            'WHERE "abc"."category"=%s AND "efg"."date">=%s LIMIT 10',
             q.get_sql(),
         )
 
@@ -47,14 +48,15 @@ class ParametrizedTests(unittest.TestCase):
                 self.table_abc.id.isin(
                     Query.from_(self.table_efg)
                     .select(self.table_efg.abc_id)
-                    .where(self.table_efg.date >= Parameter("&2"))
-                )
+                    .where(self.table_efg.date >= Parameter("&2")),
+                ),
             )
             .limit(10)
         )
 
         self.assertEqual(
-            'SELECT * FROM "abc" WHERE "category"=&1 AND "id" IN (SELECT "abc_id" FROM "efg" WHERE "date">=&2) LIMIT 10',
+            'SELECT * FROM "abc" WHERE "category"=&1 AND "id" '
+            'IN (SELECT "abc_id" FROM "efg" WHERE "date">=&2) LIMIT 10',
             q.get_sql(),
         )
 
@@ -121,7 +123,8 @@ class ParametrizedTestsWithValues(unittest.TestCase):
         parameter = FormatParameter()
         sql = q.get_sql(parameter=parameter)
         self.assertEqual(
-            'SELECT * FROM "abc" JOIN "efg" ON "abc"."id"="efg"."abc_id" WHERE "abc"."category"=%s AND "efg"."date">=%s LIMIT 10',
+            'SELECT * FROM "abc" JOIN "efg" ON "abc"."id"="efg"."abc_id" '
+            'WHERE "abc"."category"=%s AND "efg"."date">=%s LIMIT 10',
             sql,
         )
         self.assertEqual(['foobar', '2024-02-22'], parameter.get_parameters())
@@ -135,8 +138,8 @@ class ParametrizedTestsWithValues(unittest.TestCase):
                 self.table_abc.id.isin(
                     Query.from_(self.table_efg)
                     .select(self.table_efg.abc_id)
-                    .where(self.table_efg.date >= date(2024, 2, 22))
-                )
+                    .where(self.table_efg.date >= date(2024, 2, 22)),
+                ),
             )
             .limit(10)
         )
@@ -144,7 +147,8 @@ class ParametrizedTestsWithValues(unittest.TestCase):
         parameter = ListParameter(placeholder=lambda idx: f'&{idx+1}')
         sql = q.get_sql(parameter=parameter)
         self.assertEqual(
-            'SELECT * FROM "abc" WHERE "category"=&1 AND "id" IN (SELECT "abc_id" FROM "efg" WHERE "date">=&2) LIMIT 10',
+            'SELECT * FROM "abc" WHERE "category"=&1 AND "id" '
+            'IN (SELECT "abc_id" FROM "efg" WHERE "date">=&2) LIMIT 10',
             sql,
         )
         self.assertEqual(['foobar', '2024-02-22'], parameter.get_parameters())

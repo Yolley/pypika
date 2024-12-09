@@ -9,11 +9,17 @@ from pypika.utils import format_alias_sql
 
 
 class Array(Term):
-    def __init__(self, values: list, converter_cls=None, converter_options: dict = None, alias: str = None):
+    def __init__(
+        self,
+        values: list,
+        converter_cls=None,
+        converter_options: dict | None = None,
+        alias: str | None = None,
+    ):
         super().__init__(alias)
         self._values = values
         self._converter_cls = converter_cls
-        self._converter_options = converter_options or dict()
+        self._converter_options = converter_options or {}
 
     def get_sql(self):
         if self._converter_cls:
@@ -34,8 +40,8 @@ class HasAny(Function):
         self,
         left_array: Array or Field,
         right_array: Array or Field,
-        alias: str = None,
-        schema: str = None,
+        alias: str | None = None,
+        schema: str | None = None,
     ):
         self._left_array = left_array
         self._right_array = right_array
@@ -56,7 +62,7 @@ class HasAny(Function):
 
 
 class _AbstractArrayFunction(Function, metaclass=abc.ABCMeta):
-    def __init__(self, array: Array or Field, alias: str = None, schema: str = None):
+    def __init__(self, array: Array or Field, alias: str | None = None, schema: str | None = None):
         self.schema = schema
         self.alias = alias
         self.name = self.clickhouse_function()

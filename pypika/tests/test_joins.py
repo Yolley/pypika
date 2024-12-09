@@ -1,6 +1,7 @@
 import unittest
 
 from pypika import (
+    SYSTEM_TIME,
     Field,
     Interval,
     JoinException,
@@ -10,8 +11,9 @@ from pypika import (
     SetOperationException,
     Table,
     Tables,
+)
+from pypika import (
     functions as fn,
-    SYSTEM_TIME,
 )
 
 __author__ = "Timothy Heys"
@@ -613,7 +615,9 @@ class JoinBehaviorTests(unittest.TestCase):
 
     def test_join_query_without_alias(self):
         subquery = Query.from_(self.table_efg).select(
-            self.table_efg.base_id.as_("x"), self.table_efg.fizz, self.table_efg.buzz
+            self.table_efg.base_id.as_("x"),
+            self.table_efg.fizz,
+            self.table_efg.buzz,
         )
 
         test_query = (
@@ -1042,7 +1046,8 @@ class MinusTests(unittest.TestCase):
         minus_query = str(query1.minus(query2).orderby(query1.field("a")))
 
         self.assertEqual(
-            '(SELECT "foo" "a" FROM "abc") ' "MINUS " '(SELECT "bar" "a" FROM "efg") ' 'ORDER BY "a"', minus_query
+            '(SELECT "foo" "a" FROM "abc") ' "MINUS " '(SELECT "bar" "a" FROM "efg") ' 'ORDER BY "a"',
+            minus_query,
         )
 
     def test_minus_query_with_order_by_use_minus_query_field(self):
@@ -1125,7 +1130,8 @@ class ExceptOfTests(unittest.TestCase):
         except_query = str(query1.except_of(query2).orderby(query1.field("a")))
 
         self.assertEqual(
-            '(SELECT "foo" "a" FROM "abc") ' "EXCEPT " '(SELECT "bar" "a" FROM "efg") ' 'ORDER BY "a"', except_query
+            '(SELECT "foo" "a" FROM "abc") ' "EXCEPT " '(SELECT "bar" "a" FROM "efg") ' 'ORDER BY "a"',
+            except_query,
         )
 
     def test_except_query_with_order_by_use_minus_query_field(self):

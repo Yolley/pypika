@@ -1,9 +1,11 @@
 import unittest
 
 from pypika import (
-    Tables,
-    functions as fn,
     Column,
+    Tables,
+)
+from pypika import (
+    functions as fn,
 )
 from pypika.dialects import SnowflakeQuery
 
@@ -11,7 +13,7 @@ from pypika.dialects import SnowflakeQuery
 class QuoteTests(unittest.TestCase):
     table_abc, table_efg = Tables("abc", "efg")
 
-    def test_use_double_quotes_on_alias_but_not_on_terms(self):
+    def test_use_double_quotes_on_alias_but_not_on_terms_1(self):
         q = SnowflakeQuery.from_(self.table_abc).select(self.table_abc.a.as_("bar"))
 
         self.assertEqual('SELECT a "bar" FROM abc', q.get_sql(with_namespace=True))
@@ -27,7 +29,7 @@ class QuoteTests(unittest.TestCase):
             q.get_sql(with_namespace=True),
         )
 
-    def test_use_double_quotes_on_alias_but_not_on_terms(self):
+    def test_use_double_quotes_on_alias_but_not_on_terms_2(self):
         idx = self.table_abc.index.as_("idx")
         val = fn.Sum(self.table_abc.value).as_("val")
         q = SnowflakeQuery.from_(self.table_abc).select(idx, val).groupby(idx).orderby(idx)

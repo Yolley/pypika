@@ -1,6 +1,6 @@
 import unittest
 
-from pypika import AliasedQuery, PostgreSQLQuery, Query, SQLLiteQuery, SYSTEM_TIME, Table
+from pypika import SYSTEM_TIME, AliasedQuery, PostgreSQLQuery, Query, SQLLiteQuery, Table
 
 __author__ = "Timothy Heys"
 __email__ = "theys@kayak.com"
@@ -97,7 +97,8 @@ class UpdateTests(unittest.TestCase):
     def test_for_portion(self):
         with self.subTest("with system time"):
             q = Query.update(self.table_abc.for_portion(SYSTEM_TIME.from_to('2020-01-01', '2020-02-01'))).set(
-                "foo", "bar"
+                "foo",
+                "bar",
             )
 
             self.assertEqual(
@@ -107,7 +108,7 @@ class UpdateTests(unittest.TestCase):
 
         with self.subTest("with column"):
             q = Query.update(
-                self.table_abc.for_portion(self.table_abc.valid_period.from_to('2020-01-01', '2020-02-01'))
+                self.table_abc.for_portion(self.table_abc.valid_period.from_to('2020-01-01', '2020-02-01')),
             ).set("foo", "bar")
 
             self.assertEqual(
@@ -144,7 +145,8 @@ class PostgresUpdateTests(unittest.TestCase):
             .returning(self.table_abc.id, table_bcd.fname)
         )
         self.assertEqual(
-            'UPDATE "abc" SET "lname"="bcd"."long_name" FROM "bcd" RETURNING "abc"."id","bcd"."fname"', str(q)
+            'UPDATE "abc" SET "lname"="bcd"."long_name" FROM "bcd" RETURNING "abc"."id","bcd"."fname"',
+            str(q),
         )
 
     def test_update_returning_star(self):

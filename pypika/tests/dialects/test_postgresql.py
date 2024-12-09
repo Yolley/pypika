@@ -2,9 +2,9 @@ import unittest
 from collections import OrderedDict
 
 from pypika import (
+    JSON,
     Array,
     Field,
-    JSON,
     QueryException,
     Table,
 )
@@ -126,9 +126,9 @@ class JSONBOperatorsTests(unittest.TestCase):
                         [
                             ("dates", "2018-07-10 - 2018-07-17"),
                             ("imported", "8"),
-                        ]
-                    )
-                )
+                        ],
+                    ),
+                ),
             )
         )
         self.assertEqual(
@@ -234,7 +234,7 @@ class ReturningClauseTests(unittest.TestCase):
         # No exceptions for insert, update and delete queries
         with self.subTest('DELETE'):
             PostgreSQLQuery.from_(self.table_abc).where(self.table_abc.foo == self.table_abc.bar).delete().returning(
-                "id"
+                "id",
             )
         with self.subTest('UPDATE'):
             PostgreSQLQuery.update(self.table_abc).where(self.table_abc.foo == 0).set("foo", "bar").returning("id")

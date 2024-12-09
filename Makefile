@@ -11,8 +11,13 @@ install:         ## Install development dependencies
 	pip install -r requirements-dev.txt pre-commit -e . 
 	pre-commit install
 
+lint:
+	uv run ruff format pypika
+	uv run ruff check pypika --fix
+	#uv run mypy pypika --namespace-packages --show-absolute-path
+
 test:            ## Run tests
-	tox
+	uv run tox
 
 docs.build:      ## Build the documentation
 	$(SPHINXBUILD) $(SOURCEDIR) $(BUILDDIR) -b html -E

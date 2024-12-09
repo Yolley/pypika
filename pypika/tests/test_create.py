@@ -1,8 +1,8 @@
 import unittest
 
-from pypika import Column, Columns, Query, Tables, Table
-from pypika.terms import ValueWrapper, Index
+from pypika import Column, Columns, Query, Table, Tables
 from pypika.enums import ReferenceOption
+from pypika.terms import Index, ValueWrapper
 
 
 class CreateTableTests(unittest.TestCase):
@@ -148,19 +148,18 @@ class CreateTableTests(unittest.TestCase):
     def test_create_table_with_select_and_columns_fails(self):
         select = Query.from_(self.existing_table).select(self.existing_table.foo, self.existing_table.bar)
 
-        with self.subTest("for columns before as_select"):
-            with self.assertRaises(AttributeError):
-                Query.create_table(self.new_table).columns(self.foo, self.bar).as_select(select)
+        with self.subTest("for columns before as_select"), self.assertRaises(AttributeError):
+            Query.create_table(self.new_table).columns(self.foo, self.bar).as_select(select)
 
-        with self.subTest("for as_select before columns"):
-            with self.assertRaises(AttributeError):
-                Query.create_table(self.new_table).as_select(select).columns(self.foo, self.bar)
+        with self.subTest("for as_select before columns"), self.assertRaises(AttributeError):
+            Query.create_table(self.new_table).as_select(select).columns(self.foo, self.bar)
 
-        with self.subTest("repeated foreign key"):
-            with self.assertRaises(AttributeError):
-                Query.create_table(self.new_table).foreign_key([self.foo], self.existing_table, [self.bar]).foreign_key(
-                    [self.foo], self.existing_table, [self.bar]
-                )
+        with self.subTest("repeated foreign key"), self.assertRaises(AttributeError):
+            Query.create_table(self.new_table).foreign_key([self.foo], self.existing_table, [self.bar]).foreign_key(
+                [self.foo],
+                self.existing_table,
+                [self.bar],
+            )
 
     def test_create_table_as_select_not_query_raises_error(self):
         with self.assertRaises(TypeError):

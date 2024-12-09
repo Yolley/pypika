@@ -26,7 +26,7 @@ class TestIfCondition(unittest.TestCase):
                 ),
                 "if(created=updated,toFixedString('yes',3),toFixedString('no',3))",
             ),
-        ]
+        ],
     )
     def test_get_sql(self, func, expected):
         self.assertEqual(func.get_sql(), expected)
@@ -66,7 +66,7 @@ class TestMultiIfCondition(unittest.TestCase):
                 "toFixedString('light',20),"
                 "toFixedString('undefined',20))",
             ),
-        ]
+        ],
     )
     def test_get_sql(self, func, expected):
         self.assertEqual(func.get_sql(), expected)

@@ -40,7 +40,8 @@ class SelectTests(unittest.TestCase):
     def test_top_percent_invalid_range(self):
         for invalid_top in [-1, 101]:
             with self.assertRaisesRegex(
-                QueryException, "TOP value must be between 0 and 100 when `percent` is specified"
+                QueryException,
+                "TOP value must be between 0 and 100 when `percent` is specified",
             ):
                 MSSQLQuery.from_("abc").select("def").top(invalid_top, percent=True)
 
@@ -77,5 +78,6 @@ class SelectTests(unittest.TestCase):
         q = MSSQLQuery.from_(subquery).select(col, Count('*')).groupby(col)
 
         self.assertEqual(
-            'SELECT "sq0"."abc" "a",COUNT(\'*\') FROM (SELECT "abc" FROM "table1") "sq0" GROUP BY "sq0"."abc"', str(q)
+            'SELECT "sq0"."abc" "a",COUNT(\'*\') FROM (SELECT "abc" FROM "table1") "sq0" GROUP BY "sq0"."abc"',
+            str(q),
         )

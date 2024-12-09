@@ -1,6 +1,7 @@
 import unittest
 
-from pypika import Query, Rollup, RollupException, Table, functions as fn
+from pypika import Query, Rollup, RollupException, Table
+from pypika import functions as fn
 
 __author__ = "Timothy Heys"
 __email__ = "theys@kayak.com"
@@ -37,7 +38,8 @@ class RollupTests(unittest.TestCase):
     def test_no_rollup_after_rollup_mysql(self):
         with self.assertRaises(AttributeError):
             Query.from_(self.table).select(self.table.foo, self.table.fiz, fn.Sum(self.table.bar)).rollup(
-                self.table.foo, vendor="mysql"
+                self.table.foo,
+                vendor="mysql",
             ).rollup(self.table.fiz, vendor="mysql")
 
     def test_verticaoracle_func_one_groupby(self):
@@ -53,7 +55,7 @@ class RollupTests(unittest.TestCase):
                 Rollup(
                     self.table.foo,
                     self.table.fiz,
-                )
+                ),
             )
         )
 

@@ -9,15 +9,15 @@ from pypika.clickhouse.type_conversion import (
     ToFixedString,
     ToFloat32,
     ToFloat64,
+    ToInt8,
     ToInt16,
     ToInt32,
     ToInt64,
-    ToInt8,
     ToString,
+    ToUInt8,
     ToUInt16,
     ToUInt32,
     ToUInt64,
-    ToUInt8,
 )
 
 
@@ -84,7 +84,7 @@ class TestBasicTypeConverters(unittest.TestCase):
                 'toFixedString("field_name",100)',
                 ToFixedString(Field("field_name"), 100),
             ),
-        ]
+        ],
     )
     def test_basic_types_field(self, expected, func):
         self.assertEqual(func, expected)
@@ -151,7 +151,7 @@ class TestBasicTypeConverters(unittest.TestCase):
                 "toFixedString('100',100)",
                 ToFixedString("100", 100),
             ),
-        ]
+        ],
     )
     def test_basic_types_value(self, expected, func):
         self.assertEqual(func, expected)

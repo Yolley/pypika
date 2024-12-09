@@ -4,6 +4,8 @@ from pypika import (
     Case,
     Field,
     Table,
+)
+from pypika import (
     functions as fn,
 )
 from pypika.terms import (
@@ -116,7 +118,7 @@ class IsAggregateTests(unittest.TestCase):
             / fn.Sum(unique_impressions)
             * fn.Sum(pixel_mobile_search)
             / fn.Sum(unique_impressions)
-            * (1 - fn.Sum(pixel_mobile_search) / fn.Sum(unique_impressions))
+            * (1 - fn.Sum(pixel_mobile_search) / fn.Sum(unique_impressions)),
         )
 
         self.assertTrue(v.is_aggregate)

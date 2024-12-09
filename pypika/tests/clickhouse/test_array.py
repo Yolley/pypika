@@ -35,7 +35,7 @@ class TestArray(unittest.TestCase):
                 "[toFixedString('mogwai',10),toFixedString('mono',10),toFixedString('bonobo',10)] arr",
                 Array(["mogwai", "mono", "bonobo"], ToFixedString, {"length": 10}).as_('arr'),
             ),
-        ]
+        ],
     )
     def test_get_sql(self, expected: str, array: Array):
         self.assertEqual(expected, array.get_sql())
@@ -56,7 +56,7 @@ class TestHasAny(unittest.TestCase):
                     Array(["port-royal", "hammock"], ToFixedString, {"length": 20}),
                 ),
             ),
-        ]
+        ],
     )
     def test_get_sql(self, expected: str, func: HasAny):
         self.assertEqual(expected, func.get_sql())
@@ -70,7 +70,7 @@ class TestLength(unittest.TestCase):
                 Length(Field("tags")),
             ),
             ("length([1, 2, 3])", Length(Array([1, 2, 3]))),
-        ]
+        ],
     )
     def test_get_sql(self, expected: str, func: Length):
         self.assertEqual(expected, func.get_sql())
@@ -84,7 +84,7 @@ class TestEmpty(unittest.TestCase):
                 Empty(Field("tags")),
             ),
             ("empty([1, 2, 3])", Empty(Array([1, 2, 3]))),
-        ]
+        ],
     )
     def test_get_sql(self, expected: str, func: Empty):
         self.assertEqual(expected, func.get_sql())
@@ -98,7 +98,7 @@ class TestNotEmpty(unittest.TestCase):
                 NotEmpty(Field("tags")),
             ),
             ("notEmpty([1, 2, 3])", NotEmpty(Array([1, 2, 3]))),
-        ]
+        ],
     )
     def test_get_sql(self, expected: str, func: NotEmpty):
         self.assertEqual(expected, func.get_sql())

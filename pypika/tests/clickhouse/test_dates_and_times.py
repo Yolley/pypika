@@ -33,7 +33,7 @@ class TestFormatDateTime(unittest.TestCase):
                 FormatDateTime(Field("created"), "%Y-%m-%d"),
                 "formatDateTime(created,'%Y-%m-%d')",
             ),
-        ]
+        ],
     )
     def test_get_sql(self, func, expected):
         self.assertEqual(func.get_sql(), expected)
@@ -59,7 +59,7 @@ class TestAddSubtractDt(unittest.TestCase):
             (SubtractMinutes(Field("created"), 14), "subtractMinutes(created,14)"),
             (SubtractSeconds(Field("created"), 15), "subtractSeconds(created,15)"),
             (SubtractQuarters(Field("created"), 16), "subtractQuarters(created,16)"),
-        ]
+        ],
     )
     def test_get_sql(self, func, expected):
         self.assertEqual(func.get_sql(), expected)

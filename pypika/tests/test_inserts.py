@@ -3,12 +3,16 @@ import unittest
 from pypika import (
     AliasedQuery,
     Case,
-    Field as F,
     MySQLQuery,
     PostgreSQLQuery,
     Query,
     Table,
     Tables,
+)
+from pypika import (
+    Field as F,
+)
+from pypika import (
     functions as fn,
 )
 from pypika.functions import (
@@ -165,7 +169,8 @@ class InsertIntoTests(unittest.TestCase):
 
         q = Query().with_(sub_query, 'sub_qs').into(self.table_abc).select(aliased.id).from_(aliased)
         self.assertEqual(
-            'WITH sub_qs AS (SELECT "id" FROM "abc") INSERT INTO "abc" SELECT "sub_qs"."id" FROM sub_qs', str(q)
+            'WITH sub_qs AS (SELECT "id" FROM "abc") INSERT INTO "abc" SELECT "sub_qs"."id" FROM sub_qs',
+            str(q),
         )
 
 
@@ -259,11 +264,11 @@ class PostgresInsertIntoOnConflictTests(unittest.TestCase):
 
     def test_insert_on_conflict_no_handler(self):
         with self.assertRaises(QueryException):
-            query = str(PostgreSQLQuery.into(self.table_abc).insert(1).on_conflict(self.table_abc.id))
+            str(PostgreSQLQuery.into(self.table_abc).insert(1).on_conflict(self.table_abc.id))
 
     def test_insert_on_conflict_two_handlers_do_nothing(self):
         with self.assertRaises(QueryException):
-            query = (
+            (
                 PostgreSQLQuery.into(self.table_abc)
                 .insert(1)
                 .on_conflict("id")
@@ -273,7 +278,7 @@ class PostgresInsertIntoOnConflictTests(unittest.TestCase):
 
     def test_insert_on_conflict_two_handlers_do_update(self):
         with self.assertRaises(QueryException):
-            query = (
+            (
                 PostgreSQLQuery.into(self.table_abc)
                 .insert(1)
                 .on_conflict(self.table_abc.id)
@@ -283,13 +288,11 @@ class PostgresInsertIntoOnConflictTests(unittest.TestCase):
 
     def test_non_insert_on_conflict_do_nothing(self):
         with self.assertRaises(QueryException):
-            query = PostgreSQLQuery.update(self.table_abc).set("foo", "bar").on_conflict("id").do_nothing()
+            PostgreSQLQuery.update(self.table_abc).set("foo", "bar").on_conflict("id").do_nothing()
 
     def test_non_insert_on_conflict_do_update(self):
         with self.assertRaises(QueryException):
-            query = (
-                PostgreSQLQuery.update(self.table_abc).set("foo", "bar").on_conflict("id").do_update(["name"], ["m"])
-            )
+            (PostgreSQLQuery.update(self.table_abc).set("foo", "bar").on_conflict("id").do_update(["name"], ["m"]))
 
     def test_insert_on_fieldless_conflict_do_nothing(self):
         query = PostgreSQLQuery.into(self.table_abc).insert(1).on_conflict(None).do_nothing()
@@ -298,11 +301,11 @@ class PostgresInsertIntoOnConflictTests(unittest.TestCase):
 
     def test_insert_on_fieldless_conflict_do_update_field(self):
         with self.assertRaises(QueryException):
-            query = str(
+            str(
                 PostgreSQLQuery.into(self.table_abc)
                 .insert(1, "m")
                 .on_conflict(None)
-                .do_update(self.table_abc.name, "m")
+                .do_update(self.table_abc.name, "m"),
             )
 
     def test_on_conflict_from_subquery(self):
@@ -350,7 +353,8 @@ class PostgresInsertIntoOnConflictTests(unittest.TestCase):
             .do_nothing()
         )
         self.assertEqual(
-            '''INSERT INTO "abc" VALUES (1,'m') ON CONFLICT ("id") WHERE "abc"=0 AND "cde"=0 DO NOTHING''', str(qs)
+            '''INSERT INTO "abc" VALUES (1,'m') ON CONFLICT ("id") WHERE "abc"=0 AND "cde"=0 DO NOTHING''',
+            str(qs),
         )
 
     def test_on_conflict_where_empty_conflict_fields_do_update(self):
@@ -428,7 +432,8 @@ class PostgresInsertIntoOnConflictTests(unittest.TestCase):
             .where(self.table_abc.abc.eq(1))
         )
         self.assertEqual(
-            'INSERT INTO "abc" VALUES (1,\'m\') ON CONFLICT ("id") DO UPDATE SET "abc"=1 WHERE "abc"."abc"=1', str(qs)
+            'INSERT INTO "abc" VALUES (1,\'m\') ON CONFLICT ("id") DO UPDATE SET "abc"=1 WHERE "abc"."abc"=1',
+            str(qs),
         )
 
     def test_on_conflict_do_update_with_excluded_where(self):

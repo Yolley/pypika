@@ -1,10 +1,11 @@
 """
 Package for SQL analytic functions wrappers
 """
+
 from pypika.terms import (
     AnalyticFunction,
-    WindowFrameAnalyticFunction,
     IgnoreNullsAnalyticFunction,
+    WindowFrameAnalyticFunction,
 )
 
 __author__ = "Timothy Heys"

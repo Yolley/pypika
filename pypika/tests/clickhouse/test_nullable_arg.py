@@ -18,7 +18,7 @@ class TestSearchString(unittest.TestCase):
                 IfNull(Field("builder"), ToFixedString("pypika", 100)),
                 "ifNull(builder,toFixedString('pypika',100))",
             ),
-        ]
+        ],
     )
     def test_get_sql(self, func, expected):
         self.assertEqual(func.get_sql(), expected)

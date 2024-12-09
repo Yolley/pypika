@@ -1,4 +1,5 @@
-from typing import Any, Callable, List, Optional, Type, TypeVar
+from collections.abc import Callable
+from typing import Any, TypeVar
 
 __author__ = "Timothy Heys"
 __email__ = "theys@kayak.com"
@@ -87,7 +88,7 @@ def ignore_copy(func: Callable) -> Callable:
     return _getattr
 
 
-def resolve_is_aggregate(values: List[Optional[bool]]) -> Optional[bool]:
+def resolve_is_aggregate(values: list[bool | None]) -> bool | None:
     """
     Resolves the is_aggregate flag for an expression that contains multiple terms.  This works like a voter system,
     each term votes True or False or abstains with None.
@@ -102,26 +103,28 @@ def resolve_is_aggregate(values: List[Optional[bool]]) -> Optional[bool]:
     return None
 
 
-def format_quotes(value: Any, quote_char: Optional[str]) -> str:
+def format_quotes(value: Any, quote_char: str | None) -> str:
     return "{quote}{value}{quote}".format(value=value, quote=quote_char or "")
 
 
 def format_alias_sql(
     sql: str,
-    alias: Optional[str],
-    quote_char: Optional[str] = None,
-    alias_quote_char: Optional[str] = None,
+    alias: str | None,
+    quote_char: str | None = None,
+    alias_quote_char: str | None = None,
     as_keyword: bool = False,
     **kwargs: Any,
 ) -> str:
     if alias is None:
         return sql
     return "{sql}{_as}{alias}".format(
-        sql=sql, _as=' AS ' if as_keyword else ' ', alias=format_quotes(alias, alias_quote_char or quote_char)
+        sql=sql,
+        _as=' AS ' if as_keyword else ' ',
+        alias=format_quotes(alias, alias_quote_char or quote_char),
     )
 
 
-def validate(*args: Any, exc: Optional[Exception] = None, type: Optional[Type] = None) -> None:
+def validate(*args: Any, exc: Exception | None = None, type: type | None = None) -> None:
     if type is not None:
         for arg in args:
             if not isinstance(arg, type):

@@ -4,12 +4,20 @@ from pypika import (
     Case,
     CaseException,
     DatePart,
-    Field as F,
     Query,
-    Query as Q,
     Schema,
-    Table as T,
     VerticaQuery,
+)
+from pypika import (
+    Field as F,
+)
+from pypika import (
+    Query as Q,
+)
+from pypika import (
+    Table as T,
+)
+from pypika import (
     functions as fn,
 )
 from pypika.enums import Dialects, SqlTypes
@@ -347,8 +355,8 @@ class ArithmeticTests(unittest.TestCase):
         self.assertEqual('SELECT FLOOR("a"/("b"/2)) FROM "abc"', str(q4))
 
     def test__complex_op_nested_parentheses(self):
-        q1 = Q.from_("abc").select(F("a") / (F("b") / ((F("c") / 2))))
-        q2 = Q.from_("abc").select(self.t.a / (self.t.b / ((self.t.c / 2))))
+        q1 = Q.from_("abc").select(F("a") / (F("b") / (F("c") / 2)))
+        q2 = Q.from_("abc").select(self.t.a / (self.t.b / (self.t.c / 2)))
 
         self.assertEqual('SELECT "a"/("b"/("c"/2)) FROM "abc"', str(q1))
         self.assertEqual('SELECT "a"/("b"/("c"/2)) FROM "abc"', str(q2))
@@ -770,7 +778,8 @@ class DateFunctionsTests(unittest.TestCase):
         q = Q.from_(self.t).join(self.t2).on(self.t.id == self.t2.t_id).select(fn.Extract(DatePart.year, self.t.foo))
 
         self.assertEqual(
-            'SELECT EXTRACT(YEAR FROM "abc"."foo") FROM "abc" ' 'JOIN "efg" ON "abc"."id"="efg"."t_id"', str(q)
+            'SELECT EXTRACT(YEAR FROM "abc"."foo") FROM "abc" ' 'JOIN "efg" ON "abc"."id"="efg"."t_id"',
+            str(q),
         )
 
     def test_timestampadd(self):

@@ -1,6 +1,6 @@
 import unittest
 
-from pypika import Case, Query, Tables, Tuple, functions, Field
+from pypika import Case, Field, Query, Tables, Tuple, functions
 from pypika.dialects import (
     ClickHouseQuery,
     ClickHouseQueryBuilder,
@@ -13,12 +13,12 @@ from pypika.dialects import (
     OracleQueryBuilder,
     PostgreSQLQuery,
     PostgreSQLQueryBuilder,
-    RedShiftQueryBuilder,
     RedshiftQuery,
-    SQLLiteQuery,
-    SQLLiteQueryBuilder,
+    RedShiftQueryBuilder,
     SnowflakeQuery,
     SnowflakeQueryBuilder,
+    SQLLiteQuery,
+    SQLLiteQueryBuilder,
     VerticaCopyQueryBuilder,
     VerticaCreateQueryBuilder,
     VerticaQuery,
@@ -117,7 +117,7 @@ class QueryTablesTests(unittest.TestCase):
             .when(self.table_a.fname == "Tom", "It was Tom")
             .when(self.table_a.fname == "John", "It was John")
             .else_("It was someone else.")
-            .as_("who_was_it")
+            .as_("who_was_it"),
         )
         query = query.replace_table(self.table_a, self.table_b)
 
