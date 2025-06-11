@@ -72,6 +72,7 @@ from pypika.queries import (
     Query,
     Schema,
     Table,
+    Values,
 )
 from pypika.queries import (
     make_columns as Columns,
@@ -118,7 +119,7 @@ from pypika.utils import (
 
 __author__ = "Timothy Heys"
 __email__ = "theys@kayak.com"
-__version__ = "0.49.0"
+__version__ = "0.50.0"
 
 NULL = NullValue()
 SYSTEM_TIME = SystemTimeValue()
@@ -173,5 +174,6 @@ __all__ = (
     'Table',
     'Tables',
     'Tuple',
+    'Values',
     'VerticaQuery',
 )

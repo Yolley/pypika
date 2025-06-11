@@ -234,6 +234,85 @@ class Table(Selectable):
         return self._query_cls.into(self).insert(*terms)
 
 
+class Values(Selectable):
+    def __init__(
+        self,
+        alias: str,
+        columns: Sequence[str],
+        values: Optional[Sequence[Any]] = None,
+        query_cls: Optional[type["Query"]] = None,
+    ) -> None:
+        super().__init__(alias)
+        if isinstance(columns, (list, tuple, set)):
+            self.columns = columns
+        else:
+            self.columns = [columns]
+
+        self._values = []
+        if values is not None:
+            if not isinstance(values, (list, tuple)):
+                raise TypeError("Expected 'values' to be a list or tuple")
+            self._validate_terms_and_append(*values)
+
+        self._query_cls = query_cls or Query
+        if not issubclass(self._query_cls, Query):
+            raise TypeError("Expected 'query_cls' to be subclass of Query")
+
+    def get_sql(self, **kwargs: Any) -> str:
+        quote_char = kwargs.get("quote_char")
+
+        return "({values}) AS {alias} ({cols})".format(
+            values=self._values_sql(),
+            alias=format_quotes(self.alias, quote_char),
+            cols=",".join(format_quotes(col, quote_char) for col in self.columns),
+        )
+
+    def __str__(self) -> str:
+        return self.get_sql(quote_char='"')
+
+    def __eq__(self, other) -> bool:
+        return isinstance(other, Values) and self.alias == other.alias
+
+    def __repr__(self) -> str:
+        return "Values('{}', columns=({}))".format(self.alias, ", ".join(["'{}'".format(col) for col in self.columns]))
+
+    def __ne__(self, other: Any) -> bool:
+        return not self.__eq__(other)
+
+    def __hash__(self) -> int:
+        return hash(str(self))
+
+    def select(self, *terms: Sequence[Union[int, float, str, bool, Term, Field]]) -> "QueryBuilder":
+        """
+        Perform a SELECT operation on the current table
+        :param terms:
+            Type:  list[expression]
+            A list of terms to select. These can be any type of int, float, str, bool or Term or a Field.
+        :return:  QueryBuilder
+        """
+        return self._query_cls.from_(self).select(*terms)
+
+    def _validate_terms_and_append(self, *terms: Any) -> None:
+        if not isinstance(terms[0], (list, tuple, set)):
+            terms = [terms]
+
+        query_cls = self._query_cls
+        for values in terms:
+            self._values.append(
+                [value if isinstance(value, Term) else query_cls.wrap_constant(value) for value in values],
+            )
+
+    def add_values(self, *terms: Any) -> None:
+        self._validate_terms_and_append(*terms)
+
+    def _values_sql(self, **kwargs: Any) -> str:
+        return "VALUES ({values})".format(
+            values="),(".join(
+                ",".join(term.get_sql(with_alias=True, subquery=True, **kwargs) for term in row) for row in self._values
+            ),
+        )
+
+
 def make_tables(*names: tuple[str, str] | str, **kwargs: Any) -> list[Table]:
     """
     Shortcut to create many tables. If `names` param is a tuple, the first
@@ -523,6 +602,30 @@ class Query:
         """
         kwargs["query_cls"] = cls
         return make_tables(*names, **kwargs)
+
+    @classmethod
+    def Values(
+        cls,
+        alias: str,
+        columns: Sequence[str],
+        values: Optional[Sequence[Any]] = None,
+        **kwargs,
+    ) -> Values:
+        """
+        Convenience method for creating a Table that uses this Query class.
+        :param alias:
+            Type: str
+            A string alias name.
+        :param columns:
+            Type: list[str]
+            A sequence of column names
+        :param values:
+            Type: list[Any]
+            A list (or list of lists) of terms to be in the VALUES statement
+        :returns Values
+        """
+        kwargs["query_cls"] = cls
+        return Values(alias, columns, values, **kwargs)
 
 
 class _SetOperation(Selectable, Term):
@@ -980,7 +1083,7 @@ class QueryBuilder(Selectable, Term):
             # MySQL rolls up all of the dimensions always
             if not terms and not self._groupbys:
                 raise RollupException(
-                    "At least one group is required. Call Query.groupby(term) or pass" "as parameter to rollup.",
+                    "At least one group is required. Call Query.groupby(term) or pass as parameter to rollup.",
                 )
 
             self._mysql_rollup = True
@@ -1585,7 +1688,7 @@ class Joiner:
     def on(self, criterion: Criterion | None, collate: str | None = None) -> QueryBuilder:
         if criterion is None:
             raise JoinException(
-                "Parameter 'criterion' is required for a " f"{self.type_label} JOIN but was not supplied.",
+                f"Parameter 'criterion' is required for a {self.type_label} JOIN but was not supplied.",
             )
 
         self.query.do_join(JoinOn(self.item, self.how, criterion, collate))
@@ -1594,7 +1697,7 @@ class Joiner:
     def on_field(self, *fields: Any) -> QueryBuilder:
         if not fields:
             raise JoinException(
-                "Parameter 'fields' is required for a " f"{self.type_label} JOIN but was not supplied.",
+                f"Parameter 'fields' is required for a {self.type_label} JOIN but was not supplied.",
             )
 
         criterion = None

@@ -1,6 +1,6 @@
 import unittest
 
-from pypika import SYSTEM_TIME, AliasedQuery, PostgreSQLQuery, Query, SQLLiteQuery, Table
+from pypika import SYSTEM_TIME, AliasedQuery, PostgreSQLQuery, Query, SQLLiteQuery, Table, Values
 
 __author__ = "Timothy Heys"
 __email__ = "theys@kayak.com"
@@ -153,6 +153,21 @@ class PostgresUpdateTests(unittest.TestCase):
         q = PostgreSQLQuery.update(self.table_abc).where(self.table_abc.foo == 0).set("foo", "bar").returning(Star())
 
         self.assertEqual('UPDATE "abc" SET "foo"=\'bar\' WHERE "foo"=0 RETURNING *', str(q))
+
+    def test_update_values(self):
+        values = Values("data", ("id", "foo"), [(1, "bar"), (2, "bar")])
+
+        q = (
+            PostgreSQLQuery.update(self.table_abc)
+            .from_(values)
+            .where(self.table_abc.id == values.id)
+            .set(self.table_abc.foo, values.foo)
+        )
+
+        self.assertEqual(
+            'UPDATE "abc" SET "foo"="data"."foo" FROM (VALUES (1,\'bar\'),(2,\'bar\')) AS "data" ("id","foo") WHERE "abc"."id"="data"."id"',
+            str(q),
+        )
 
 
 class SQLLiteUpdateTests(unittest.TestCase):
