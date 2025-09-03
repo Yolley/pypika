@@ -73,6 +73,7 @@ from pypika.queries import (
     Schema,
     Table,
     Values,
+    ValuesTuple,
 )
 from pypika.queries import (
     make_columns as Columns,
@@ -176,4 +177,5 @@ __all__ = (
     'Tuple',
     'Values',
     'VerticaQuery',
+    'ValuesTuple',
 )

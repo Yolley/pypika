@@ -778,7 +778,7 @@ class DateFunctionsTests(unittest.TestCase):
         q = Q.from_(self.t).join(self.t2).on(self.t.id == self.t2.t_id).select(fn.Extract(DatePart.year, self.t.foo))
 
         self.assertEqual(
-            'SELECT EXTRACT(YEAR FROM "abc"."foo") FROM "abc" ' 'JOIN "efg" ON "abc"."id"="efg"."t_id"',
+            'SELECT EXTRACT(YEAR FROM "abc"."foo") FROM "abc" JOIN "efg" ON "abc"."id"="efg"."t_id"',
             str(q),
         )
 

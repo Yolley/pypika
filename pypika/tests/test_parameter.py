@@ -144,7 +144,7 @@ class ParametrizedTestsWithValues(unittest.TestCase):
             .limit(10)
         )
 
-        parameter = ListParameter(placeholder=lambda idx: f'&{idx+1}')
+        parameter = ListParameter(placeholder=lambda idx: f'&{idx + 1}')
         sql = q.get_sql(parameter=parameter)
         self.assertEqual(
             'SELECT * FROM "abc" WHERE "category"=&1 AND "id" '

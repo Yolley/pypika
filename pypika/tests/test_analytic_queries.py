@@ -17,7 +17,7 @@ class RankTests(unittest.TestCase):
         q = Query.from_(self.table_abc).select(expr)
 
         self.assertEqual(
-            "SELECT " "RANK() " 'OVER(PARTITION BY "foo" ORDER BY "date") ' 'FROM "abc"',
+            "SELECT RANK() OVER(PARTITION BY \"foo\" ORDER BY \"date\") FROM \"abc\"",
             str(q),
         )
 
@@ -27,7 +27,7 @@ class RankTests(unittest.TestCase):
         q = Query.from_(self.table_abc).select(expr)
 
         self.assertEqual(
-            "SELECT " "DENSE_RANK() " 'OVER(PARTITION BY "foo" ORDER BY "date") ' 'FROM "abc"',
+            "SELECT DENSE_RANK() OVER(PARTITION BY \"foo\" ORDER BY \"date\") FROM \"abc\"",
             str(q),
         )
 
@@ -37,7 +37,7 @@ class RankTests(unittest.TestCase):
         q = Query.from_(self.table_abc).select(expr)
 
         self.assertEqual(
-            "SELECT " "ROW_NUMBER() " 'OVER(PARTITION BY "foo" ORDER BY "date") ' 'FROM "abc"',
+            "SELECT ROW_NUMBER() OVER(PARTITION BY \"foo\" ORDER BY \"date\") FROM \"abc\"",
             str(q),
         )
 
@@ -47,7 +47,7 @@ class RankTests(unittest.TestCase):
         q = Query.from_(self.table_abc).select(expr)
 
         self.assertEqual(
-            "SELECT " "RANK() " 'OVER(PARTITION BY "foo" ORDER BY "date") "rank" ' 'FROM "abc"',
+            "SELECT RANK() OVER(PARTITION BY \"foo\" ORDER BY \"date\") \"rank\" FROM \"abc\"",
             str(q),
         )
 
@@ -57,7 +57,7 @@ class RankTests(unittest.TestCase):
         q = Query.from_(self.table_abc).select(expr)
 
         self.assertEqual(
-            "SELECT " "RANK() " 'OVER(PARTITION BY "foo","bar" ORDER BY "date") ' 'FROM "abc"',
+            "SELECT RANK() OVER(PARTITION BY \"foo\",\"bar\" ORDER BY \"date\") FROM \"abc\"",
             str(q),
         )
 
@@ -66,21 +66,21 @@ class RankTests(unittest.TestCase):
 
         q = Query.from_(self.table_abc).select(expr)
 
-        self.assertEqual("SELECT " "NTILE(5) " 'FROM "abc"', str(q))
+        self.assertEqual("SELECT NTILE(5) FROM \"abc\"", str(q))
 
     def test_ntile_with_partition(self):
         expr = an.NTile(5).over(self.table_abc.foo)
 
         q = Query.from_(self.table_abc).select(expr)
 
-        self.assertEqual("SELECT " "NTILE(5) " 'OVER(PARTITION BY "foo") ' 'FROM "abc"', str(q))
+        self.assertEqual("SELECT NTILE(5) OVER(PARTITION BY \"foo\") FROM \"abc\"", str(q))
 
     def test_ntile_with_order(self):
         expr = an.NTile(5).orderby(self.table_abc.date)
 
         q = Query.from_(self.table_abc).select(expr)
 
-        self.assertEqual("SELECT " "NTILE(5) " 'OVER(ORDER BY "date") ' 'FROM "abc"', str(q))
+        self.assertEqual("SELECT NTILE(5) OVER(ORDER BY \"date\") FROM \"abc\"", str(q))
 
     def test_ntile_with_partition_and_order(self):
         expr = an.NTile(5).over(self.table_abc.foo).orderby(self.table_abc.date)
@@ -88,7 +88,7 @@ class RankTests(unittest.TestCase):
         q = Query.from_(self.table_abc).select(expr)
 
         self.assertEqual(
-            "SELECT " "NTILE(5) " 'OVER(PARTITION BY "foo" ORDER BY "date") ' 'FROM "abc"',
+            "SELECT NTILE(5) OVER(PARTITION BY \"foo\" ORDER BY \"date\") FROM \"abc\"",
             str(q),
         )
 
@@ -98,7 +98,7 @@ class RankTests(unittest.TestCase):
         q = Query.from_(self.table_abc).select(expr)
 
         self.assertEqual(
-            "SELECT " 'FIRST_VALUE("fizz") ' 'OVER(PARTITION BY "foo" ORDER BY "date") ' 'FROM "abc"',
+            "SELECT FIRST_VALUE(\"fizz\") OVER(PARTITION BY \"foo\" ORDER BY \"date\") FROM \"abc\"",
             str(q),
         )
 
@@ -108,7 +108,7 @@ class RankTests(unittest.TestCase):
         q = Query.from_(self.table_abc).select(expr)
 
         self.assertEqual(
-            "SELECT " 'FIRST_VALUE("fizz" IGNORE NULLS) ' 'OVER(PARTITION BY "foo" ORDER BY "date") ' 'FROM "abc"',
+            "SELECT FIRST_VALUE(\"fizz\" IGNORE NULLS) OVER(PARTITION BY \"foo\" ORDER BY \"date\") FROM \"abc\"",
             str(q),
         )
 
@@ -118,7 +118,7 @@ class RankTests(unittest.TestCase):
         q = Query.from_(self.table_abc).select(expr)
 
         self.assertEqual(
-            "SELECT " 'FIRST_VALUE("fizz" IGNORE NULLS) ' 'OVER(PARTITION BY "foo" ORDER BY "date") ' 'FROM "abc"',
+            "SELECT FIRST_VALUE(\"fizz\" IGNORE NULLS) OVER(PARTITION BY \"foo\" ORDER BY \"date\") FROM \"abc\"",
             str(q),
         )
 
@@ -132,7 +132,7 @@ class RankTests(unittest.TestCase):
         q = Query.from_(self.table_abc).select(expr)
 
         self.assertEqual(
-            "SELECT " 'FIRST_VALUE("fizz","buzz") ' 'OVER(PARTITION BY "foo" ORDER BY "date") ' 'FROM "abc"',
+            "SELECT FIRST_VALUE(\"fizz\",\"buzz\") OVER(PARTITION BY \"foo\" ORDER BY \"date\") FROM \"abc\"",
             str(q),
         )
 
@@ -142,7 +142,7 @@ class RankTests(unittest.TestCase):
         q = Query.from_(self.table_abc).select(expr)
 
         self.assertEqual(
-            "SELECT " 'LAST_VALUE("fizz") ' 'OVER(PARTITION BY "foo" ORDER BY "date") ' 'FROM "abc"',
+            "SELECT LAST_VALUE(\"fizz\") OVER(PARTITION BY \"foo\" ORDER BY \"date\") FROM \"abc\"",
             str(q),
         )
 
@@ -196,7 +196,7 @@ class RankTests(unittest.TestCase):
         q = Query.from_(self.table_abc).select(expr)
 
         self.assertEqual(
-            "SELECT " 'LAST_VALUE("fizz") ' 'OVER(PARTITION BY "foo" ORDER BY "date" ASC) ' 'FROM "abc"',
+            "SELECT LAST_VALUE(\"fizz\") OVER(PARTITION BY \"foo\" ORDER BY \"date\" ASC) FROM \"abc\"",
             str(q),
         )
 
@@ -206,7 +206,7 @@ class RankTests(unittest.TestCase):
         q = Query.from_(self.table_abc).select(expr)
 
         self.assertEqual(
-            "SELECT " 'LAST_VALUE("fizz") ' 'OVER(PARTITION BY "foo" ORDER BY "date" DESC) ' 'FROM "abc"',
+            "SELECT LAST_VALUE(\"fizz\") OVER(PARTITION BY \"foo\" ORDER BY \"date\" DESC) FROM \"abc\"",
             str(q),
         )
 
@@ -218,7 +218,7 @@ class RankTests(unittest.TestCase):
         q = Query.from_(self.table_abc).select(expr)
 
         self.assertEqual(
-            "SELECT " 'LAST_VALUE("fizz","buzz") ' 'OVER(PARTITION BY "foo" ORDER BY "date") ' 'FROM "abc"',
+            "SELECT LAST_VALUE(\"fizz\",\"buzz\") OVER(PARTITION BY \"foo\" ORDER BY \"date\") FROM \"abc\"",
             str(q),
         )
 
@@ -228,7 +228,7 @@ class RankTests(unittest.TestCase):
         q = Query.from_(self.table_abc).select(expr)
 
         self.assertEqual(
-            "SELECT " 'LAST_VALUE("fizz" IGNORE NULLS) ' 'OVER(PARTITION BY "foo" ORDER BY "date") ' 'FROM "abc"',
+            "SELECT LAST_VALUE(\"fizz\" IGNORE NULLS) OVER(PARTITION BY \"foo\" ORDER BY \"date\") FROM \"abc\"",
             str(q),
         )
 
@@ -238,7 +238,7 @@ class RankTests(unittest.TestCase):
         q = Query.from_(self.table_abc).select(expr)
 
         self.assertEqual(
-            "SELECT " 'MEDIAN("fizz") ' 'OVER(PARTITION BY "foo","bar" ORDER BY "date") ' 'FROM "abc"',
+            "SELECT MEDIAN(\"fizz\") OVER(PARTITION BY \"foo\",\"bar\" ORDER BY \"date\") FROM \"abc\"",
             str(q),
         )
 
@@ -248,7 +248,7 @@ class RankTests(unittest.TestCase):
         q = Query.from_(self.table_abc).select(expr)
 
         self.assertEqual(
-            "SELECT " 'AVG("fizz") ' 'OVER(PARTITION BY "foo","bar" ORDER BY "date") ' 'FROM "abc"',
+            "SELECT AVG(\"fizz\") OVER(PARTITION BY \"foo\",\"bar\" ORDER BY \"date\") FROM \"abc\"",
             str(q),
         )
 
@@ -258,7 +258,7 @@ class RankTests(unittest.TestCase):
         q = Query.from_(self.table_abc).select(expr)
 
         self.assertEqual(
-            "SELECT " 'STDDEV("fizz") ' 'OVER(PARTITION BY "foo","bar" ORDER BY "date") ' 'FROM "abc"',
+            "SELECT STDDEV(\"fizz\") OVER(PARTITION BY \"foo\",\"bar\" ORDER BY \"date\") FROM \"abc\"",
             str(q),
         )
 
@@ -270,7 +270,7 @@ class RankTests(unittest.TestCase):
         q = Query.from_(self.table_abc).select(expr)
 
         self.assertEqual(
-            "SELECT " 'STDDEV_POP("fizz") ' 'OVER(PARTITION BY "foo","bar" ORDER BY "date") ' 'FROM "abc"',
+            "SELECT STDDEV_POP(\"fizz\") OVER(PARTITION BY \"foo\",\"bar\" ORDER BY \"date\") FROM \"abc\"",
             str(q),
         )
 
@@ -282,7 +282,7 @@ class RankTests(unittest.TestCase):
         q = Query.from_(self.table_abc).select(expr)
 
         self.assertEqual(
-            "SELECT " 'STDDEV_SAMP("fizz") ' 'OVER(PARTITION BY "foo","bar" ORDER BY "date") ' 'FROM "abc"',
+            "SELECT STDDEV_SAMP(\"fizz\") OVER(PARTITION BY \"foo\",\"bar\" ORDER BY \"date\") FROM \"abc\"",
             str(q),
         )
 
@@ -294,7 +294,7 @@ class RankTests(unittest.TestCase):
         q = Query.from_(self.table_abc).select(expr)
 
         self.assertEqual(
-            "SELECT " 'VARIANCE("fizz") ' 'OVER(PARTITION BY "foo","bar" ORDER BY "date") ' 'FROM "abc"',
+            "SELECT VARIANCE(\"fizz\") OVER(PARTITION BY \"foo\",\"bar\" ORDER BY \"date\") FROM \"abc\"",
             str(q),
         )
 
@@ -304,7 +304,7 @@ class RankTests(unittest.TestCase):
         q = Query.from_(self.table_abc).select(expr)
 
         self.assertEqual(
-            "SELECT " 'VAR_POP("fizz") ' 'OVER(PARTITION BY "foo","bar" ORDER BY "date") ' 'FROM "abc"',
+            "SELECT VAR_POP(\"fizz\") OVER(PARTITION BY \"foo\",\"bar\" ORDER BY \"date\") FROM \"abc\"",
             str(q),
         )
 
@@ -314,7 +314,7 @@ class RankTests(unittest.TestCase):
         q = Query.from_(self.table_abc).select(expr)
 
         self.assertEqual(
-            "SELECT " 'VAR_SAMP("fizz") ' 'OVER(PARTITION BY "foo","bar" ORDER BY "date") ' 'FROM "abc"',
+            "SELECT VAR_SAMP(\"fizz\") OVER(PARTITION BY \"foo\",\"bar\" ORDER BY \"date\") FROM \"abc\"",
             str(q),
         )
 
@@ -340,13 +340,7 @@ class RankTests(unittest.TestCase):
         q = Query.from_(self.table_abc).select(expr)
 
         self.assertEqual(
-            "SELECT "
-            'SUM("fizz") '
-            "OVER("
-            'PARTITION BY "foo" ORDER BY "date" '
-            "ROWS UNBOUNDED PRECEDING"
-            ") "
-            'FROM "abc"',
+            "SELECT SUM(\"fizz\") OVER(PARTITION BY \"foo\" ORDER BY \"date\" ROWS UNBOUNDED PRECEDING) FROM \"abc\"",
             str(q),
         )
 
@@ -356,7 +350,7 @@ class RankTests(unittest.TestCase):
         q = Query.from_(self.table_abc).select(expr)
 
         self.assertEqual(
-            "SELECT " 'MAX("fizz") ' "OVER(" 'PARTITION BY "foo" ORDER BY "date" ' "ROWS 5 PRECEDING" ") " 'FROM "abc"',
+            "SELECT MAX(\"fizz\") OVER(PARTITION BY \"foo\" ORDER BY \"date\" ROWS 5 PRECEDING) FROM \"abc\"",
             str(q),
         )
 
@@ -366,7 +360,7 @@ class RankTests(unittest.TestCase):
         q = Query.from_(self.table_abc).select(expr)
 
         self.assertEqual(
-            "SELECT " 'MIN("fizz") ' "OVER(" 'PARTITION BY "foo" ORDER BY "date" ' "ROWS CURRENT ROW" ") " 'FROM "abc"',
+            "SELECT MIN(\"fizz\") OVER(PARTITION BY \"foo\" ORDER BY \"date\" ROWS CURRENT ROW) FROM \"abc\"",
             str(q),
         )
 
@@ -394,13 +388,7 @@ class RankTests(unittest.TestCase):
         q = Query.from_(self.table_abc).select(expr)
 
         self.assertEqual(
-            "SELECT "
-            'MAX("fizz") '
-            "OVER("
-            'PARTITION BY "foo" ORDER BY "date" '
-            "RANGE 5 PRECEDING"
-            ") "
-            'FROM "abc"',
+            "SELECT MAX(\"fizz\") OVER(PARTITION BY \"foo\" ORDER BY \"date\" RANGE 5 PRECEDING) FROM \"abc\"",
             str(q),
         )
 
@@ -410,13 +398,7 @@ class RankTests(unittest.TestCase):
         q = Query.from_(self.table_abc).select(expr)
 
         self.assertEqual(
-            "SELECT "
-            'MIN("fizz") '
-            "OVER("
-            'PARTITION BY "foo" ORDER BY "date" '
-            "RANGE CURRENT ROW"
-            ") "
-            'FROM "abc"',
+            "SELECT MIN(\"fizz\") OVER(PARTITION BY \"foo\" ORDER BY \"date\" RANGE CURRENT ROW) FROM \"abc\"",
             str(q),
         )
 
@@ -550,7 +532,7 @@ class RankTests(unittest.TestCase):
     def test_empty_over(self):
         query = Query.from_(self.table_abc).select(an.Sum(self.table_abc.fizz).over())
 
-        self.assertEqual("SELECT " 'SUM("fizz") OVER() ' 'FROM "abc"', str(query))
+        self.assertEqual("SELECT SUM(\"fizz\") OVER() FROM \"abc\"", str(query))
 
     def test_rows_called_twice_raises_attribute_error(self):
         with self.assertRaises(AttributeError):

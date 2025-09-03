@@ -23,7 +23,7 @@ class TupleTests(unittest.TestCase):
             .where(Tuple(self.table_abc.foo, self.table_abc.bar) == Tuple(1, 2))
         )
 
-        self.assertEqual('SELECT "foo","bar" FROM "abc" ' 'WHERE ("foo","bar")=(1,2)', str(q))
+        self.assertEqual('SELECT "foo","bar" FROM "abc" WHERE ("foo","bar")=(1,2)', str(q))
 
     def test_tuple_equality_tuple_on_left(self):
         q = (
@@ -32,7 +32,7 @@ class TupleTests(unittest.TestCase):
             .where(Tuple(self.table_abc.foo, self.table_abc.bar) == (1, 2))
         )
 
-        self.assertEqual('SELECT "foo","bar" FROM "abc" ' 'WHERE ("foo","bar")=(1,2)', str(q))
+        self.assertEqual('SELECT "foo","bar" FROM "abc" WHERE ("foo","bar")=(1,2)', str(q))
 
     def test_tuple_equality_tuple_on_right(self):
         q = (
@@ -42,7 +42,7 @@ class TupleTests(unittest.TestCase):
         )
 
         # Order is reversed due to lack of right equals method
-        self.assertEqual('SELECT "foo","bar" FROM "abc" ' 'WHERE (1,2)=("foo","bar")', str(q))
+        self.assertEqual('SELECT "foo","bar" FROM "abc" WHERE (1,2)=("foo","bar")', str(q))
 
     def test_tuple_in_using_python_tuples(self):
         q = (
@@ -52,7 +52,7 @@ class TupleTests(unittest.TestCase):
         )
 
         self.assertEqual(
-            'SELECT "foo","bar" FROM "abc" ' 'WHERE ("foo","bar") IN ((1,1),(2,2),(3,3))',
+            'SELECT "foo","bar" FROM "abc" WHERE ("foo","bar") IN ((1,1),(2,2),(3,3))',
             str(q),
         )
 
@@ -64,7 +64,7 @@ class TupleTests(unittest.TestCase):
         )
 
         self.assertEqual(
-            'SELECT "foo","bar" FROM "abc" ' 'WHERE ("foo","bar") IN ((1,1),(2,2),(3,3))',
+            'SELECT "foo","bar" FROM "abc" WHERE ("foo","bar") IN ((1,1),(2,2),(3,3))',
             str(q),
         )
 
@@ -76,7 +76,7 @@ class TupleTests(unittest.TestCase):
         )
 
         self.assertEqual(
-            'SELECT "foo","bar" FROM "abc" ' 'WHERE ("foo","bar") IN ((1,1),(2,2),(3,3))',
+            'SELECT "foo","bar" FROM "abc" WHERE ("foo","bar") IN ((1,1),(2,2),(3,3))',
             str(q),
         )
 

@@ -70,10 +70,7 @@ class CreateTableTests(unittest.TestCase):
             )
 
             self.assertEqual(
-                'CREATE TABLE "abc" ('
-                '"a" INT,'
-                '"b" VARCHAR(100),'
-                'FOREIGN KEY ("a","b") REFERENCES "efg" ("c","d"))',
+                'CREATE TABLE "abc" ("a" INT,"b" VARCHAR(100),FOREIGN KEY ("a","b") REFERENCES "efg" ("c","d"))',
                 str(q),
             )
 

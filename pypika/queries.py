@@ -4,6 +4,7 @@ from functools import reduce
 from typing import Any, Optional, Union
 
 from pypika.enums import Dialects, JoinType, ReferenceOption, SetOperation
+from pypika.mixins import TupleMixin
 from pypika.terms import (
     ArithmeticExpression,
     Criterion,
@@ -262,9 +263,9 @@ class Values(Selectable):
         quote_char = kwargs.get("quote_char")
 
         return "({values}) AS {alias} ({cols})".format(
-            values=self._values_sql(),
+            values=self._get_values_sql(),
             alias=format_quotes(self.alias, quote_char),
-            cols=",".join(format_quotes(col, quote_char) for col in self.columns),
+            cols=self._format_columns(quote_char),
         )
 
     def __str__(self) -> str:
@@ -305,12 +306,38 @@ class Values(Selectable):
     def add_values(self, *terms: Any) -> None:
         self._validate_terms_and_append(*terms)
 
-    def _values_sql(self, **kwargs: Any) -> str:
+    def _format_columns(self, quote_char: str | None) -> str:
+        return ",".join(format_quotes(col, quote_char) for col in self.columns)
+
+    def _get_values_sql(self, **kwargs: Any) -> str:
         return "VALUES ({values})".format(
-            values="),(".join(
-                ",".join(term.get_sql(with_alias=True, subquery=True, **kwargs) for term in row) for row in self._values
-            ),
+            values="),(".join(self._format_values_row(row, **kwargs) for row in self._values),
         )
+
+    def _format_values_row(self, row: Sequence[Term], **kwargs: Any) -> str:
+        return ",".join(term.get_sql(with_alias=True, subquery=True, **kwargs) for term in row)
+
+
+class ValuesTuple(Values, TupleMixin):
+    def __init__(
+        self,
+        alias: str,
+        columns: Sequence[str],
+        values: Optional[Sequence[Any]] = None,
+        query_cls: Optional[type["Query"]] = None,
+        *,
+        as_type: str,
+        tuple_alias: str = "x",
+    ) -> None:
+        super().__init__(alias, columns, values, query_cls)
+        self.as_type = as_type
+        self.tuple_alias = tuple_alias
+
+    def _format_columns(self, quote_char: str | None) -> str:
+        return format_quotes(self.tuple_alias, quote_char)
+
+    def _format_values_row(self, row: Sequence[Term], **kwargs: Any) -> str:
+        return "({row})::{as_type}".format(row=super()._format_values_row(row, **kwargs), as_type=self.as_type)
 
 
 def make_tables(*names: tuple[str, str] | str, **kwargs: Any) -> list[Table]:

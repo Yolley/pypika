@@ -119,6 +119,7 @@ select = [
     "PERF", # perflint
     "FLY", # flynt
 ]
+ignore = ["COM812"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["pypika"]

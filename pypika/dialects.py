@@ -713,7 +713,7 @@ class MSSQLQueryBuilder(FetchNextAndOffsetRowsQueryBuilder):
             raise QueryException("TOP value must be an integer")
 
         if percent and not (0 <= int(value) <= 100):
-            raise QueryException("TOP value must be between 0 and 100 when `percent`" " is specified")
+            raise QueryException("TOP value must be between 0 and 100 when `percent` is specified")
         self._top_percent: bool = percent
         self._top_with_ties: bool = with_ties
 

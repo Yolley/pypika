@@ -13,6 +13,7 @@ from typing import (
 )
 
 from pypika.enums import Arithmetic, Boolean, Comparator, Dialects, Equality, JSONOperators, Matching, Order
+from pypika.mixins import TupleMixin
 from pypika.utils import (
     CaseException,
     FunctionException,
@@ -680,8 +681,11 @@ class Field(Criterion, JSON):
 
         # Need to add namespace if the table has an alias
         if self.table and (with_namespace or self.table.alias):
-            table_name = self.table.get_table_name()
-            field_sql = f"{format_quotes(table_name, quote_char)}.{field_sql}"
+            if isinstance(self.table, TupleMixin):
+                field_sql = f"({format_quotes(self.table.tuple_alias, quote_char)}).{field_sql}"
+            else:
+                table_name = self.table.get_table_name()
+                field_sql = f"{format_quotes(table_name, quote_char)}.{field_sql}"
 
         field_alias = getattr(self, "alias", None)
         if with_alias:

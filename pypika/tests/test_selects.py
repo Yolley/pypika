@@ -136,7 +136,7 @@ class SelectTests(unittest.TestCase):
         subquery = Query.from_(self.table_abc).select("*")
         q = Query.from_(subquery).select(subquery.foo, subquery.bar)
 
-        self.assertEqual('SELECT "sq0"."foo","sq0"."bar" ' 'FROM (SELECT * FROM "abc") "sq0"', str(q))
+        self.assertEqual('SELECT "sq0"."foo","sq0"."bar" FROM (SELECT * FROM "abc") "sq0"', str(q))
 
     def test_select__multiple_subqueries(self):
         subquery0 = Query.from_(self.table_abc).select("foo")
@@ -144,7 +144,7 @@ class SelectTests(unittest.TestCase):
         q = Query.from_(subquery0).from_(subquery1).select(subquery0.foo, subquery1.bar)
 
         self.assertEqual(
-            'SELECT "sq0"."foo","sq1"."bar" ' 'FROM (SELECT "foo" FROM "abc") "sq0",' '(SELECT "bar" FROM "efg") "sq1"',
+            'SELECT "sq0"."foo","sq1"."bar" FROM (SELECT "foo" FROM "abc") "sq0",(SELECT "bar" FROM "efg") "sq1"',
             str(q),
         )
 
@@ -1091,7 +1091,7 @@ class AliasTests(unittest.TestCase):
         q = Query.from_(table_abc).select(my_foo, table_abc.bar).groupby(my_foo).orderby(my_foo)
 
         self.assertEqual(
-            'SELECT "q0"."foo" "my_foo","q0"."bar" ' 'FROM "abc" "q0" ' 'GROUP BY "my_foo" ' 'ORDER BY "my_foo"',
+            'SELECT "q0"."foo" "my_foo","q0"."bar" FROM "abc" "q0" GROUP BY "my_foo" ORDER BY "my_foo"',
             str(q),
         )
 
@@ -1154,7 +1154,7 @@ class SubqueryTests(unittest.TestCase):
         q = Query.from_(self.table_abc).select("foo", "bar").select(subq)
 
         self.assertEqual(
-            'SELECT "foo","bar",(SELECT "fizzbuzz" FROM "efg" WHERE "id"=1) ' 'FROM "abc"',
+            'SELECT "foo","bar",(SELECT "fizzbuzz" FROM "efg" WHERE "id"=1) FROM "abc"',
             str(q),
         )
 
@@ -1164,7 +1164,7 @@ class SubqueryTests(unittest.TestCase):
         q = Query.from_(self.table_abc).select("foo", "bar").select(subq.as_("sq"))
 
         self.assertEqual(
-            'SELECT "foo","bar",(SELECT "fizzbuzz" FROM "efg" WHERE "id"=1) "sq" ' 'FROM "abc"',
+            'SELECT "foo","bar",(SELECT "fizzbuzz" FROM "efg" WHERE "id"=1) "sq" FROM "abc"',
             str(q),
         )
 
@@ -1177,7 +1177,7 @@ class SubqueryTests(unittest.TestCase):
         )
 
         self.assertEqual(
-            'SELECT "foo","bar" FROM "abc" ' 'WHERE "bar"=(SELECT "fiz" FROM "efg" WHERE "buz"=0)',
+            'SELECT "foo","bar" FROM "abc" WHERE "bar"=(SELECT "fiz" FROM "efg" WHERE "buz"=0)',
             str(query),
         )
 
@@ -1249,10 +1249,7 @@ class SubqueryTests(unittest.TestCase):
         test_query = Query.from_(subquery).select(subquery.x, subquery.fizz, subquery.buzz)
 
         self.assertEqual(
-            'SELECT "sq0"."x","sq0"."fizz","sq0"."buzz" '
-            "FROM ("
-            'SELECT "base_id" "x","fizz","buzz" FROM "efg"'
-            ') "sq0"',
+            'SELECT "sq0"."x","sq0"."fizz","sq0"."buzz" FROM (SELECT "base_id" "x","fizz","buzz" FROM "efg") "sq0"',
             str(test_query),
         )
 
@@ -1270,10 +1267,7 @@ class SubqueryTests(unittest.TestCase):
         test_query = Query.from_(subquery).select(subquery.x, subquery.fizz, subquery.buzz)
 
         self.assertEqual(
-            'SELECT "subq"."x","subq"."fizz","subq"."buzz" '
-            "FROM ("
-            'SELECT "base_id" "x","fizz","buzz" FROM "efg"'
-            ') "subq"',
+            'SELECT "subq"."x","subq"."fizz","subq"."buzz" FROM (SELECT "base_id" "x","fizz","buzz" FROM "efg") "subq"',
             str(test_query),
         )
 
@@ -1318,6 +1312,6 @@ class QuoteTests(unittest.TestCase):
         query = Query.from_(t1).join(t2).on(t1.Value.between(t2.start, t2.end)).select(t1.value)
 
         self.assertEqual(
-            "SELECT t1.value FROM table1 t1 " "JOIN table2 t2 ON t1.Value " "BETWEEN t2.start AND t2.end",
+            "SELECT t1.value FROM table1 t1 JOIN table2 t2 ON t1.Value BETWEEN t2.start AND t2.end",
             query.get_sql(quote_char=None),
         )

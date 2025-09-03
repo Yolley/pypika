@@ -56,7 +56,7 @@ class InsertIntoTests(unittest.TestCase):
         )
 
         self.assertEqual(
-            'INSERT INTO "abc" ' "VALUES (1,['a','b','c']),(2,['c','d','e'])",
+            'INSERT INTO "abc" VALUES (1,[\'a\',\'b\',\'c\']),(2,[\'c\',\'d\',\'e\'])',
             str(query),
         )
 
@@ -84,7 +84,7 @@ class InsertIntoTests(unittest.TestCase):
         query = Query.into(self.table_abc).insert((1, "a", True), (2, "b", False)).insert(3, "c", True)
 
         self.assertEqual(
-            'INSERT INTO "abc" VALUES ' "(1,'a',true),(2,'b',false)," "(3,'c',true)",
+            'INSERT INTO "abc" VALUES (1,\'a\',true),(2,\'b\',false),(3,\'c\',true)',
             str(query),
         )
 
@@ -94,7 +94,7 @@ class InsertIntoTests(unittest.TestCase):
         )
 
         self.assertEqual(
-            'INSERT INTO "abc" VALUES ' "(1,'a',true),(2,'b',false)," "(3,'c',true),(4,'d',false)",
+            'INSERT INTO "abc" VALUES (1,\'a\',true),(2,\'b\',false),(3,\'c\',true),(4,\'d\',false)',
             str(query),
         )
 
@@ -766,7 +766,7 @@ class InsertSelectFromTests(unittest.TestCase):
             .select(self.table_efg.fiz, self.table_efg.buz, self.table_efg.baz)
         )
 
-        self.assertEqual('INSERT INTO "abc" ' 'SELECT "fiz","buz","baz" FROM "efg"', str(query))
+        self.assertEqual('INSERT INTO "abc" SELECT "fiz","buz","baz" FROM "efg"', str(query))
 
     def test_insert_columns_from_star(self):
         query = (
@@ -780,7 +780,7 @@ class InsertSelectFromTests(unittest.TestCase):
             .select("*")
         )
 
-        self.assertEqual('INSERT INTO "abc" ("foo","bar","buz") ' 'SELECT * FROM "efg"', str(query))
+        self.assertEqual('INSERT INTO "abc" ("foo","bar","buz") SELECT * FROM "efg"', str(query))
 
     def test_insert_columns_from_columns(self):
         query = (
@@ -791,7 +791,7 @@ class InsertSelectFromTests(unittest.TestCase):
         )
 
         self.assertEqual(
-            'INSERT INTO "abc" ("foo","bar","buz") ' 'SELECT "fiz","buz","baz" FROM "efg"',
+            'INSERT INTO "abc" ("foo","bar","buz") SELECT "fiz","buz","baz" FROM "efg"',
             str(query),
         )
 

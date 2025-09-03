@@ -84,10 +84,7 @@ class QueryTablesTests(unittest.TestCase):
         query = query.replace_table(self.table_a, self.table_d)
 
         self.assertEqual(
-            'SELECT "d".* '
-            'FROM "d" '
-            'JOIN "b" ON "d"."customer_id"="b"."id" '
-            'JOIN "c" ON "b"."seller_id"="c"."id"',
+            'SELECT "d".* FROM "d" JOIN "b" ON "d"."customer_id"="b"."id" JOIN "c" ON "b"."seller_id"="c"."id"',
             str(query),
         )
 
@@ -107,7 +104,7 @@ class QueryTablesTests(unittest.TestCase):
         query = query.replace_table(self.table_a, self.table_b)
 
         self.assertEqual(
-            'SELECT SUM("revenue") ' 'FROM "b" ' 'GROUP BY "customer" ' 'HAVING SUM("revenue")>=1000',
+            'SELECT SUM("revenue") FROM "b" GROUP BY "customer" HAVING SUM("revenue")>=1000',
             str(query),
         )
 
